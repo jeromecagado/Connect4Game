@@ -1,4 +1,6 @@
-﻿namespace Connect4Game
+﻿using Plugin.Maui.Audio;
+
+namespace Connect4Game
 {
     public partial class App : Application
     {
@@ -6,7 +8,10 @@
         {
             InitializeComponent();
 
-            MainPage = new AppShell();
+            var audioManager = AudioManager.Current;
+            var soundManager = new SoundManager(audioManager);
+
+            MainPage = new AppShell(soundManager);
         }
     }
 }
