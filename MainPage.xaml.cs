@@ -141,7 +141,7 @@ namespace Connect4Game
                     // Check for win
                     if (game.CheckForWin(row, column))
                     {
-                        await DisplayAlert("Victory!", $"Player {game.CurrentPlayer} wins!", "Play Again");
+                        await DisplayAlert("Connect Four!", $"Player {game.CurrentPlayer} wins!", "Play Again");
                         game.ResetGame();
                         PlayResetSound();
                         ClearBoardVisuals();
