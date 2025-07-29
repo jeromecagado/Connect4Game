@@ -7,8 +7,4 @@
     Shell.FlyoutBehavior="Disabled"
     Title="Connect4Game">
 
-    <ShellContent
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
-
 </Shell>

@@ -4,7 +4,8 @@ namespace Connect4Game
 {
     public partial class MainPage : ContentPage
     {
-        readonly IAudioManager audioManager;
+        private readonly SoundManager soundManager;
+       // readonly IAudioManager audioManager;
         private readonly BoxView[] indicatorTokens = new BoxView[7];
         private readonly GameLogic game = new GameLogic();
         // Stores references to the visual tokens on the grid
@@ -12,10 +13,10 @@ namespace Connect4Game
         // Prevents duplicate drops
         private bool isDropping = false;
 
-        public MainPage(IAudioManager audioManager)
+        public MainPage(SoundManager soundManager)
         {
             InitializeComponent();
-            this.audioManager = audioManager;
+            this.soundManager = soundManager;
             
             indicatorTokens[0] = Indicator0;
             indicatorTokens[1] = Indicator1;
@@ -91,16 +92,13 @@ namespace Connect4Game
 
         private async void PlayDropSound()
         {
-            var stream = await FileSystem.OpenAppPackageFileAsync("drop.mp3");
-            var player = audioManager.CreatePlayer(stream);
-            player.Play();
+            await soundManager.PlayDropSound();
         }
 
         private async void PlayResetSound()
         {
-            var stream = await FileSystem.OpenAppPackageFileAsync("reset.mp3");
-            var player = audioManager.CreatePlayer(stream);
-            player.Play();
+
+            await soundManager.PlayResetSound();
         }
 
         private async void OnArrowsTapped(object sender, EventArgs e)

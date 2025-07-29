@@ -2,9 +2,19 @@
 {
     public partial class AppShell : Shell
     {
-        public AppShell()
+        private readonly SoundManager soundManager;
+        public AppShell(SoundManager soundManager)
         {
             InitializeComponent();
+
+            var mainPage = new MainPage(soundManager);
+
+            Items.Add(new ShellContent
+            {
+                Title = "Connect4Game",
+                Content = mainPage,
+                Route = "MainPage"
+            });
         }
     }
 }
