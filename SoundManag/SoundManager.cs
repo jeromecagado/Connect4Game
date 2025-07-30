@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Connect4Game
+namespace Connect4Game.SoundManag
 {
     public class SoundManager
     {

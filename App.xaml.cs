@@ -1,4 +1,5 @@
 ﻿using Plugin.Maui.Audio;
+using Connect4Game.SoundManag;
 
 namespace Connect4Game
 {
@@ -7,7 +8,6 @@ namespace Connect4Game
         public App()
         {
             InitializeComponent();
-
             var audioManager = AudioManager.Current;
             var soundManager = new SoundManager(audioManager);
 

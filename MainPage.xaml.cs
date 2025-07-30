@@ -1,4 +1,6 @@
-﻿using Plugin.Maui.Audio;
+﻿using Connect4Game.Logic;
+using Connect4Game.SoundManag;
+using Plugin.Maui.Audio;
 
 namespace Connect4Game
 {

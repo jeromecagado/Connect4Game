@@ -1,4 +1,6 @@
-﻿namespace Connect4Game
+﻿using Connect4Game.SoundManag;
+
+namespace Connect4Game
 {
     public partial class AppShell : Shell
     {
