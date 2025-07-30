@@ -72,4 +72,8 @@
 	  </MauiAsset>
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Splash Feature\" />
+	</ItemGroup>
+
 </Project>
