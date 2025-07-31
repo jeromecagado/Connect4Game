@@ -1,6 +1,4 @@
 ﻿using Plugin.Maui.Audio;
-using System;
-using System.Collections.Generic;
 
 namespace Connect4Game.SoundManag
 {
@@ -42,5 +40,6 @@ namespace Connect4Game.SoundManag
 
         public Task PlayDropSound() => PlaySoundAsync("drop.mp3");
         public Task PlayResetSound() => PlaySoundAsync("reset.mp3");
+        public Task PlayIntroVoiceAsync() => PlaySoundAsync("introVoice.mp3");
     }
 }

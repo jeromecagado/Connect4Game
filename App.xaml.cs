@@ -1,5 +1,6 @@
 ﻿using Plugin.Maui.Audio;
 using Connect4Game.SoundManag;
+using Connect4Game.Splash_Feature;
 
 namespace Connect4Game
 {
@@ -11,7 +12,7 @@ namespace Connect4Game
             var audioManager = AudioManager.Current;
             var soundManager = new SoundManager(audioManager);
 
-            MainPage = new AppShell(soundManager);
+            MainPage = new SplashPage(soundManager);
         }
     }
 }
