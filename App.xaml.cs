@@ -6,13 +6,11 @@ namespace Connect4Game
 {
     public partial class App : Application
     {
-        public App()
+        public App(IServiceProvider serviceProvider)
         {
             InitializeComponent();
-            var audioManager = AudioManager.Current;
-            var soundManager = new SoundManager(audioManager);
-
-            MainPage = new SplashPage(soundManager);
+            var splashPage = serviceProvider.GetService<SplashPage>();
+            MainPage = splashPage;
         }
     }
 }

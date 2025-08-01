@@ -4,19 +4,35 @@ using Connect4Game.SoundManag;
 public partial class SplashPage : ContentPage
 {
 	private readonly SoundManager _soundManager;
-	public SplashPage(SoundManager soundManager)
+	private readonly AppShell _appShell;
+	private bool _hasStarted = false;
+	public SplashPage(SoundManager soundManager, AppShell appShell)
 	{
 		InitializeComponent();
 		_soundManager = soundManager;
+		_appShell = appShell;
 	}
 
 	private async void OnPlayButtonClicked(object sender, EventArgs e)
 	{
+		// Tested duplicate bug.
+		//Console.WriteLine("Play Button clicked");
+		if (_hasStarted)
+		{
+			Console.WriteLine("Splash already started - ignoring extra tap.");
+			return;
+		}
+
+		_hasStarted = true;
+		PlayButton.IsEnabled = false; // prevent further interaction
+
+		Console.WriteLine("Starting splash sequence...");
+
 		await DropTokensAsync();
         await _soundManager.PlayIntroVoiceAsync();
 
         await Task.Delay(3000);
-		Application.Current.MainPage = new AppShell(_soundManager);
+		Application.Current.MainPage = _appShell;
 	}
 
 	private async Task DropTokensAsync()

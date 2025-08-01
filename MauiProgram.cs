@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Plugin.Maui.Audio;
+using Connect4Game.Splash_Feature;
+using Connect4Game.SoundManag;
 
 
 namespace Connect4Game
@@ -11,10 +13,14 @@ namespace Connect4Game
             var builder = MauiApp.CreateBuilder();
 
             builder.Services.AddSingleton(AudioManager.Current);
+            builder.Services.AddSingleton<SoundManager>();
+            builder.Services.AddTransient<SplashPage>();
             builder.Services.AddTransient<MainPage>();
+            builder.Services.AddSingleton<App>();
+            builder.Services.AddSingleton<AppShell>();
 
             builder
-                .UseMauiApp<App>()
+                .UseMauiApp(serviceProvider => serviceProvider.GetService<App>())
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
