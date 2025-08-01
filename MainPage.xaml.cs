@@ -6,7 +6,7 @@ namespace Connect4Game
 {
     public partial class MainPage : ContentPage
     {
-        private readonly SoundManager soundManager;
+        private readonly SoundManager _soundManager;
        // readonly IAudioManager audioManager;
         private readonly BoxView[] indicatorTokens = new BoxView[7];
         private readonly GameLogic game = new GameLogic();
@@ -18,7 +18,7 @@ namespace Connect4Game
         public MainPage(SoundManager soundManager)
         {
             InitializeComponent();
-            this.soundManager = soundManager;
+            _soundManager = soundManager;
             
             indicatorTokens[0] = Indicator0;
             indicatorTokens[1] = Indicator1;
@@ -94,13 +94,13 @@ namespace Connect4Game
 
         private async void PlayDropSound()
         {
-            await soundManager.PlayDropSound();
+            await _soundManager.PlayDropSound();
         }
 
         private async void PlayResetSound()
         {
 
-            await soundManager.PlayResetSound();
+            await _soundManager.PlayResetSound();
         }
 
         private async void OnArrowsTapped(object sender, EventArgs e)

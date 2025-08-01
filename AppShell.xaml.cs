@@ -4,8 +4,8 @@ namespace Connect4Game
 {
     public partial class AppShell : Shell
     {
-        private readonly SoundManager soundManager;
-        public AppShell(SoundManager soundManager, MainPage mainPage)
+        private readonly SoundManager _soundManager;
+        public AppShell(SoundManager _soundManager, MainPage mainPage)
         {
             InitializeComponent();
 

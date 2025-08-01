@@ -12,6 +12,7 @@ namespace Connect4Game
         {
             var builder = MauiApp.CreateBuilder();
 
+            // dependencies
             builder.Services.AddSingleton(AudioManager.Current);
             builder.Services.AddSingleton<SoundManager>();
             builder.Services.AddTransient<SplashPage>();
