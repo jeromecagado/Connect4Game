@@ -36,12 +36,13 @@
                              Grid.Row="0"
                              HorizontalOptions="Center"
                              VerticalOptions="Center"
-                             Spacing="10">
+                             Spacing="0">
 
             <!-- Drop Tokens -->
             <Grid ColumnDefinitions="*,*,*,*,*,*,*"
               HorizontalOptions="Center"
-              WidthRequest="330">
+              WidthRequest="330"
+              Margin="0,0,0,10">
 
                 <BoxView x:Name="Indicator0" 
                      BackgroundColor="Red"
@@ -216,8 +217,31 @@
                   HeightRequest="400"
                   WidthRequest="330"
                   HorizontalOptions="Center"
-                  VerticalOptions="Center" />
+                  VerticalOptions="Center"
+                  Margin="0"/>
             </Frame>
+            
+            <!-- Legs -->
+            <Grid ColumnDefinitions="*,*,*" WidthRequest="330" HorizontalOptions="Center">
+                <BoxView BackgroundColor="DarkBlue"
+                         HeightRequest="40"
+                         WidthRequest="30"
+                         CornerRadius="15,0,0,0"
+                         Grid.Column="0"
+                         HorizontalOptions="End" />
+                <BoxView BackgroundColor="DarkBlue"
+                         HeightRequest="40"
+                         WidthRequest="270"
+                         CornerRadius="0"
+                         Grid.Column="1"
+                         HorizontalOptions="Center" />
+                <BoxView BackgroundColor="DarkBlue"
+                         HeightRequest="40"
+                         WidthRequest="30"
+                         CornerRadius="0,15,0,0"
+                         Grid.Column="2"
+                         HorizontalOptions="Start" />
+            </Grid>
 
         </VerticalStackLayout>
     </Grid>
