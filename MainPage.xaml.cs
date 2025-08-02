@@ -9,16 +9,17 @@ namespace Connect4Game
         private readonly SoundManager _soundManager;
        // readonly IAudioManager audioManager;
         private readonly BoxView[] indicatorTokens = new BoxView[7];
-        private readonly GameLogic game = new GameLogic();
+        private readonly GameLogic _game;
         // Stores references to the visual tokens on the grid
         private readonly BoxView[,] tokens = new BoxView[6, 7];
         // Prevents duplicate drops
         private bool isDropping = false;
 
-        public MainPage(SoundManager soundManager)
+        public MainPage(SoundManager soundManager, GameLogic gameLogic)
         {
             InitializeComponent();
             _soundManager = soundManager;
+            _game = gameLogic;
             
             indicatorTokens[0] = Indicator0;
             indicatorTokens[1] = Indicator1;
@@ -121,10 +122,10 @@ namespace Connect4Game
             isDropping = true;
             for (int row = 5; row >= 0; row--)
             {
-                if (game.Board[row, column] == 0)
+                if (_game.Board[row, column] == 0)
                 {
-                    game.Board[row, column] = game.CurrentPlayer;
-                    tokens[row, column].BackgroundColor = game.CurrentPlayer == 1 ? Colors.Red : Colors.Yellow;
+                    _game.Board[row, column] = _game.CurrentPlayer;
+                    tokens[row, column].BackgroundColor = _game.CurrentPlayer == 1 ? Colors.Red : Colors.Yellow;
 
                     // Gravity animation
                     tokens[row, column].TranslationY = -400;
@@ -141,20 +142,20 @@ namespace Connect4Game
                     await tokens[row, column].ScaleTo(1, 300, Easing.BounceOut);
 
                     // Check for win
-                    if (game.CheckForWin(row, column))
+                    if (_game.CheckForWin(row, column))
                     {
-                        await DisplayAlert("Connect Four!", $"Player {game.CurrentPlayer} wins!", "Play Again");
-                        game.ResetGame();
+                        await DisplayAlert("Connect Four!", $"Player {_game.CurrentPlayer} wins!", "Play Again");
+                        _game.ResetGame();
                         PlayResetSound();
                         ClearBoardVisuals();
                         UpdateIndicatorColors();
                         isDropping = false;
                         return;
                     }
-                    else if (game.IsBoardFull())
+                    else if (_game.IsBoardFull())
                     {
                         await DisplayAlert("Draw!", "No more moves - it's a tie!", "Play Again");
-                        game.ResetGame();
+                        _game.ResetGame();
                         PlayResetSound();
                         ClearBoardVisuals();
                         UpdateIndicatorColors();
@@ -164,7 +165,7 @@ namespace Connect4Game
                     else
                     {
                         // Switch turns
-                        game.SwitchPlayer();
+                        _game.SwitchPlayer();
                         UpdateIndicatorColors();
                     }
                     // Now unlock
@@ -181,9 +182,9 @@ namespace Connect4Game
         private void UpdateIndicatorColors()
         {
 
-            var color = game.CurrentPlayer == 1 ? Colors.Red : Colors.Yellow;
+            var color = _game.CurrentPlayer == 1 ? Colors.Red : Colors.Yellow;
             TurnToken.BackgroundColor = color;
-            TurnText.Text = $"Player {game.CurrentPlayer}'s Turn";
+            TurnText.Text = $"Player {_game.CurrentPlayer}'s Turn";
 
             for (int col = 0; col < indicatorTokens.Length; col++)
             {
@@ -193,14 +194,14 @@ namespace Connect4Game
 
         private void ApplyHoverEffect(BoxView box)
         {
-            var color = game.CurrentPlayer == 1 ? Color.FromArgb("#FF6666") : Color.FromArgb("#FFFF66");
+            var color = _game.CurrentPlayer == 1 ? Color.FromArgb("#FF6666") : Color.FromArgb("#FFFF66");
             box.BackgroundColor = color;
             box.Scale = 1.2;
         }
 
         private void ClearHoverEffect(BoxView box)
         {
-            var color = game.CurrentPlayer == 1 ? Colors.Red : Colors.Yellow;
+            var color = _game.CurrentPlayer == 1 ? Colors.Red : Colors.Yellow;
             box.BackgroundColor = color;
             box.Scale = 1.0;
         }

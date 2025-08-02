@@ -55,14 +55,15 @@ public partial class SplashPage : ContentPage
 
 			token.TranslationY = -100;
 
-			await token.TranslateTo(0, 160 + (i * 10), 600, Easing.BounceOut);
+            await _soundManager.PlayDropSound();
+            await token.TranslateTo(0, 160 + (i * 10), 600, Easing.BounceOut);
 
 			await token.FadeTo(0.7, 150);
 			await token.FadeTo(1, 150);
 
-			await _soundManager.PlayDropSound();
+			
 
-			await Task.Delay(200);  // Stagger drops
+			await Task.Delay(150);  // Stagger drops
 		}
         
     }

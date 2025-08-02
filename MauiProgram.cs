@@ -2,6 +2,7 @@
 using Plugin.Maui.Audio;
 using Connect4Game.Splash_Feature;
 using Connect4Game.SoundManag;
+using Connect4Game.Logic;
 
 
 namespace Connect4Game
@@ -19,6 +20,7 @@ namespace Connect4Game
             builder.Services.AddTransient<MainPage>();
             builder.Services.AddSingleton<App>();
             builder.Services.AddSingleton<AppShell>();
+            builder.Services.AddTransient<GameLogic>();
 
             builder
                 .UseMauiApp(serviceProvider => serviceProvider.GetService<App>())
