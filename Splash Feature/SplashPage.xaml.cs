@@ -1,16 +1,20 @@
-namespace Connect4Game.Splash_Feature;
+using Connect4Game.Settings;
 using Connect4Game.SoundManag;
+
+namespace Connect4Game.Splash_Feature;
 
 public partial class SplashPage : ContentPage
 {
 	private readonly SoundManager _soundManager;
-	private readonly AppShell _appShell;
+	private readonly GameSettings _gameSettings;
+	private readonly GameMode _gameMode;
 	private bool _hasStarted = false;
-	public SplashPage(SoundManager soundManager, AppShell appShell)
+	public SplashPage(SoundManager soundManager, GameSettings gameSettings, GameMode gameMode)
 	{
 		InitializeComponent();
 		_soundManager = soundManager;
-		_appShell = appShell;
+		_gameSettings = gameSettings;
+		_gameMode = gameMode;
 	}
 
 	private async void OnPlayButtonClicked(object sender, EventArgs e)
@@ -29,10 +33,8 @@ public partial class SplashPage : ContentPage
 		Console.WriteLine("Starting splash sequence...");
 
 		await DropTokensAsync();
-        await _soundManager.PlayIntroVoiceAsync();
-
-        await Task.Delay(3000);
-		Application.Current.MainPage = _appShell;
+        
+		Application.Current.MainPage = _gameMode;
 	}
 
 	private async Task DropTokensAsync()
@@ -60,9 +62,6 @@ public partial class SplashPage : ContentPage
 
 			await token.FadeTo(0.7, 150);
 			await token.FadeTo(1, 150);
-
-			
-
 			await Task.Delay(150);  // Stagger drops
 		}
         

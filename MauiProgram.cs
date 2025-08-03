@@ -3,6 +3,9 @@ using Plugin.Maui.Audio;
 using Connect4Game.Splash_Feature;
 using Connect4Game.SoundManag;
 using Connect4Game.Logic;
+using Connect4Game.Settings;
+using Connect4Game.AI;
+
 
 
 namespace Connect4Game
@@ -21,7 +24,25 @@ namespace Connect4Game
             builder.Services.AddSingleton<App>();
             builder.Services.AddSingleton<AppShell>();
             builder.Services.AddTransient<GameLogic>();
+            builder.Services.AddTransient<GameMode>();
+            builder.Services.AddSingleton<GameSettings>();
+            builder.Services.AddSingleton<EasyStrategy>();
+            builder.Services.AddSingleton<MediumStrategy>();
+            builder.Services.AddSingleton<HardStrategy>();
 
+            builder.Services.AddTransient<AiPlayer>(sp =>
+            {
+                var settings = sp.GetRequiredService<GameSettings>();
+                IStrategy strategy = settings.Difficulty switch
+                {
+                    AiDifficulty.Easy => sp.GetRequiredService<EasyStrategy>(),
+                    AiDifficulty.Medium => sp.GetRequiredService<MediumStrategy>(),
+                    AiDifficulty.Hard => sp.GetRequiredService<HardStrategy>(),
+                    _ => sp.GetRequiredService<EasyStrategy>()
+                };
+                return new AiPlayer(strategy);
+            });
+            
             builder
                 .UseMauiApp(serviceProvider => serviceProvider.GetService<App>())
                 .ConfigureFonts(fonts =>
