@@ -3,6 +3,7 @@ using Connect4Game.Logic;
 using Connect4Game.Settings;
 using Connect4Game.SoundManag;
 using Plugin.Maui.Audio;
+using System.Runtime.CompilerServices;
 
 namespace Connect4Game
 {
@@ -11,6 +12,7 @@ namespace Connect4Game
         private readonly AiPlayer _aiPlayer;
         private readonly SoundManager _soundManager;
         private readonly BoxView[] indicatorTokens = new BoxView[7];
+        private readonly TapGestureRecognizer[] _tapRecognizers = new TapGestureRecognizer[7];
         private readonly GameLogic _game;
         // Stores references to the visual tokens on the grid
         private readonly BoxView[,] tokens = new BoxView[6, 7];
@@ -29,7 +31,10 @@ namespace Connect4Game
             _aiPlayer = aiPlayer;
 
             isVsAI = _gameSettings.IsVsAI;
-            
+            Console.WriteLine($"Game Mode: {(isVsAI ? "Player vs AI" : "Player vs Player")}");
+
+
+
             indicatorTokens[0] = Indicator0;
             indicatorTokens[1] = Indicator1;
             indicatorTokens[2] = Indicator2;
@@ -38,9 +43,20 @@ namespace Connect4Game
             indicatorTokens[5] = Indicator5;
             indicatorTokens[6] = Indicator6;
 
+
             for (int i = 0; i < indicatorTokens.Length; i++)
             {
                 var indicator = indicatorTokens[i];
+
+                var tap = new TapGestureRecognizer
+                {
+                    CommandParameter = i.ToString()
+                };
+                tap.Tapped += OnArrowsTapped;
+                Console.WriteLine($"Tapped! isVsAI: {isVsAI}, CurrentPlayer: {_game.CurrentPlayer}");
+
+                indicator.GestureRecognizers.Add(tap);
+                _tapRecognizers[i] = tap;
 
                 var pointerEnter = new PointerGestureRecognizer();
                 pointerEnter.PointerEntered += (s, e) => ApplyHoverEffect(indicator);
@@ -102,6 +118,24 @@ namespace Connect4Game
             UpdateIndicatorColors();
         }
 
+        private void SetArrowInputEnabled(bool isEnabled)
+        {
+            for (int i = 0; i <indicatorTokens.Length; i++)
+            {
+                var indicator = indicatorTokens[i];
+                var tap = _tapRecognizers[i];
+
+                if (isEnabled && !indicator.GestureRecognizers.Contains(tap))
+                {
+                    indicator.GestureRecognizers.Add(tap);
+                }
+                else if (!isEnabled && indicator.GestureRecognizers.Contains(tap))
+                {
+                    indicator.GestureRecognizers.Remove(tap);
+                }
+            }
+        }
+
         private async void PlayDropSound()
         {
             await _soundManager.PlayDropSound();
@@ -109,12 +143,13 @@ namespace Connect4Game
 
         private async void PlayResetSound()
         {
-
             await _soundManager.PlayResetSound();
         }
-
         private async void OnArrowsTapped(object sender, EventArgs e)
         {
+            if (isVsAI && _game.CurrentPlayer == 2)
+                return;
+
             if (sender is BoxView box &&
                 box.GestureRecognizers.FirstOrDefault() is TapGestureRecognizer tap &&
                 tap.CommandParameter is string param &&
@@ -154,8 +189,20 @@ namespace Connect4Game
                     // Check for win
                     if (_game.CheckForWin(row, column))
                     {
+                        if (isVsAI)
+                        {
+                            await DisplayAlert("Connect Four!", "AI wins!", "Play Again");
+                            _game.ResetGame();
+                            RemoveAllTapGestures();
+                            PlayResetSound();
+                            ClearBoardVisuals();
+                            UpdateIndicatorColors();
+                            isDropping = false;
+                            return;
+                        }
                         await DisplayAlert("Connect Four!", $"Player {_game.CurrentPlayer} wins!", "Play Again");
                         _game.ResetGame();
+                        RemoveAllTapGestures();
                         PlayResetSound();
                         ClearBoardVisuals();
                         UpdateIndicatorColors();
@@ -166,6 +213,7 @@ namespace Connect4Game
                     {
                         await DisplayAlert("Draw!", "No more moves - it's a tie!", "Play Again");
                         _game.ResetGame();
+                        RemoveAllTapGestures();
                         PlayResetSound();
                         ClearBoardVisuals();
                         UpdateIndicatorColors();
@@ -178,11 +226,14 @@ namespace Connect4Game
                         _game.SwitchPlayer();
                         UpdateIndicatorColors();
 
+                        Console.WriteLine($"AI Mode: {isVsAI}, CurrentPlayer: {_game.CurrentPlayer}");
                         // If AI, AI will make a move. 
                         if (isVsAI && _game.CurrentPlayer == 2)
                         {
                             await Task.Delay(500);
                             int aiColumn = _aiPlayer.DecideMove(_game.Board);
+                            Console.WriteLine($"AI chose column: {aiColumn}");
+                            isDropping = false;
                             await DropDiscInColumn(aiColumn);
                         }
                     }
@@ -206,6 +257,22 @@ namespace Connect4Game
             for (int col = 0; col < indicatorTokens.Length; col++)
             {
                 indicatorTokens[col].BackgroundColor = color;
+                indicatorTokens[col].Opacity = (isVsAI && _game.CurrentPlayer == 2) ? 0.5 : 1.0;
+            }
+
+            SetArrowInputEnabled(!(isVsAI && _game.CurrentPlayer == 2));
+        }
+
+        private void RemoveAllTapGestures()
+        {
+            for (int i = 0; i < indicatorTokens.Length; i++)
+            {
+                var indicator = indicatorTokens[i];
+                var tap = _tapRecognizers[i];
+                if (indicator.GestureRecognizers.Contains(tap))
+                {
+                    indicator.GestureRecognizers.Remove(tap);
+                }
             }
         }
 
