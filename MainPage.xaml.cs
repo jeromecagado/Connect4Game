@@ -1,4 +1,6 @@
-﻿using Connect4Game.Logic;
+﻿using Connect4Game.AI;
+using Connect4Game.Logic;
+using Connect4Game.Settings;
 using Connect4Game.SoundManag;
 using Plugin.Maui.Audio;
 
@@ -6,20 +8,27 @@ namespace Connect4Game
 {
     public partial class MainPage : ContentPage
     {
+        private readonly AiPlayer _aiPlayer;
         private readonly SoundManager _soundManager;
-       // readonly IAudioManager audioManager;
         private readonly BoxView[] indicatorTokens = new BoxView[7];
         private readonly GameLogic _game;
         // Stores references to the visual tokens on the grid
         private readonly BoxView[,] tokens = new BoxView[6, 7];
         // Prevents duplicate drops
         private bool isDropping = false;
+        private readonly GameSettings _gameSettings;
+        // Checks for AI flag.
+        private bool isVsAI = false;
 
-        public MainPage(SoundManager soundManager, GameLogic gameLogic)
+        public MainPage(GameSettings gameSettings, SoundManager soundManager, GameLogic gameLogic, AiPlayer aiPlayer)
         {
             InitializeComponent();
+            _gameSettings = gameSettings;
             _soundManager = soundManager;
             _game = gameLogic;
+            _aiPlayer = aiPlayer;
+
+            isVsAI = _gameSettings.IsVsAI;
             
             indicatorTokens[0] = Indicator0;
             indicatorTokens[1] = Indicator1;
@@ -120,6 +129,7 @@ namespace Connect4Game
         {
             if (isDropping) return;
             isDropping = true;
+
             for (int row = 5; row >= 0; row--)
             {
                 if (_game.Board[row, column] == 0)
@@ -167,13 +177,20 @@ namespace Connect4Game
                         // Switch turns
                         _game.SwitchPlayer();
                         UpdateIndicatorColors();
+
+                        // If AI, AI will make a move. 
+                        if (isVsAI && _game.CurrentPlayer == 2)
+                        {
+                            await Task.Delay(500);
+                            int aiColumn = _aiPlayer.DecideMove(_game.Board);
+                            await DropDiscInColumn(aiColumn);
+                        }
                     }
                     // Now unlock
                     isDropping = false;
                     return;
                 }
             }
-
             // If no empty slot found
             await DisplayAlert("Column Full", "Try a different column!", "OK");
             isDropping = false;

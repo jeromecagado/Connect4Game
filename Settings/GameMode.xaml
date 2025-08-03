@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Connect4Game.Settings.GameMode"
+             Title="GameMode">
+    <VerticalStackLayout Padding="30" Spacing="20" VerticalOptions="Center">
+        <StackLayout x:Name="ModeButtons" Spacing="10">
+            <Label Text="Choose game mode." FontSize="18" HorizontalOptions="Center" />
+
+            <Button Text="Player vs Player"
+                Clicked="OnPlayerVsPlayerClicked"
+                BackgroundColor="LightBlue" />
+
+            <Button Text="Player vs AI"
+                Clicked="OnPlayervsAiClicked"
+                BackgroundColor="LightGreen" />
+        </StackLayout>
+
+        <!-- Difficulty Options -->
+        <StackLayout x:Name="DifficultyOptions" IsVisible="False" Spacing="10">
+            <Label Text="Select AI Difficulty" FontSize="18" HorizontalOptions="Center" />
+
+            <Button Text="Easy" Clicked="OnEasyAiClicked" BackgroundColor="GreenYellow" />
+            <Button Text="Medium" Clicked="OnMediumAiClicked" BackgroundColor="DarkOrange" />
+            <Button Text="Hard" Clicked="OnHardAiClicked" BackgroundColor="Red" />
+        </StackLayout>
+    </VerticalStackLayout>
+</ContentPage>

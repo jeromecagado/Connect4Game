@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Connect4Game.Logic
 {
@@ -14,7 +13,6 @@ namespace Connect4Game.Logic
         private int currentPlayer = 1;
         public int CurrentPlayer => currentPlayer;
         public int[,] Board => board;
-
 
         public void ResetGame()
         {
