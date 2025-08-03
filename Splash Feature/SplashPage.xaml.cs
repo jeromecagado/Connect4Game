@@ -5,13 +5,15 @@ namespace Connect4Game.Splash_Feature;
 
 public partial class SplashPage : ContentPage
 {
+	private readonly IServiceProvider _serviceProvider;
 	private readonly SoundManager _soundManager;
 	private readonly GameSettings _gameSettings;
 	private readonly GameMode _gameMode;
 	private bool _hasStarted = false;
-	public SplashPage(SoundManager soundManager, GameSettings gameSettings, GameMode gameMode)
+	public SplashPage(IServiceProvider serviceProvider, SoundManager soundManager, GameSettings gameSettings, GameMode gameMode)
 	{
 		InitializeComponent();
+		_serviceProvider = serviceProvider;
 		_soundManager = soundManager;
 		_gameSettings = gameSettings;
 		_gameMode = gameMode;
@@ -34,6 +36,7 @@ public partial class SplashPage : ContentPage
 
 		await DropTokensAsync();
         
+		var _gameMode = _serviceProvider.GetService<GameMode>();
 		Application.Current.MainPage = _gameMode;
 	}
 

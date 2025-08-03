@@ -3,6 +3,7 @@ using Connect4Game.Logic;
 using Connect4Game.Settings;
 using Connect4Game.SoundManag;
 using Plugin.Maui.Audio;
+using System.Runtime.CompilerServices;
 
 namespace Connect4Game
 {
@@ -11,6 +12,7 @@ namespace Connect4Game
         private readonly AiPlayer _aiPlayer;
         private readonly SoundManager _soundManager;
         private readonly BoxView[] indicatorTokens = new BoxView[7];
+        private readonly TapGestureRecognizer[] _tapRecognizers = new TapGestureRecognizer[7];
         private readonly GameLogic _game;
         // Stores references to the visual tokens on the grid
         private readonly BoxView[,] tokens = new BoxView[6, 7];
@@ -29,7 +31,9 @@ namespace Connect4Game
             _aiPlayer = aiPlayer;
 
             isVsAI = _gameSettings.IsVsAI;
-            
+            System.Diagnostics.Debug.WriteLine($"Game Mode: {(isVsAI ? "Player vs AI" : "Player vs Player")}");
+
+
             indicatorTokens[0] = Indicator0;
             indicatorTokens[1] = Indicator1;
             indicatorTokens[2] = Indicator2;
@@ -37,6 +41,7 @@ namespace Connect4Game
             indicatorTokens[4] = Indicator4;
             indicatorTokens[5] = Indicator5;
             indicatorTokens[6] = Indicator6;
+
 
             for (int i = 0; i < indicatorTokens.Length; i++)
             {
@@ -109,12 +114,13 @@ namespace Connect4Game
 
         private async void PlayResetSound()
         {
-
             await _soundManager.PlayResetSound();
         }
-
         private async void OnArrowsTapped(object sender, EventArgs e)
         {
+            if (isVsAI && _game.CurrentPlayer == 2)
+                return;
+
             if (sender is BoxView box &&
                 box.GestureRecognizers.FirstOrDefault() is TapGestureRecognizer tap &&
                 tap.CommandParameter is string param &&
@@ -154,8 +160,20 @@ namespace Connect4Game
                     // Check for win
                     if (_game.CheckForWin(row, column))
                     {
+                        if (isVsAI && _game.CurrentPlayer == 2)
+                        {
+                            await DisplayAlert("Connect Four!", "AI wins!", "Play Again");
+                            _game.ResetGame();
+                    //        RemoveAllTapGestures();
+                            PlayResetSound();
+                            ClearBoardVisuals();
+                            UpdateIndicatorColors();
+                            isDropping = false;
+                            return;
+                        }
                         await DisplayAlert("Connect Four!", $"Player {_game.CurrentPlayer} wins!", "Play Again");
                         _game.ResetGame();
+                    //    RemoveAllTapGestures();
                         PlayResetSound();
                         ClearBoardVisuals();
                         UpdateIndicatorColors();
@@ -166,6 +184,7 @@ namespace Connect4Game
                     {
                         await DisplayAlert("Draw!", "No more moves - it's a tie!", "Play Again");
                         _game.ResetGame();
+                  //      RemoveAllTapGestures();
                         PlayResetSound();
                         ClearBoardVisuals();
                         UpdateIndicatorColors();
@@ -183,6 +202,8 @@ namespace Connect4Game
                         {
                             await Task.Delay(500);
                             int aiColumn = _aiPlayer.DecideMove(_game.Board);
+                            Console.WriteLine($"AI chose column: {aiColumn}");
+                            isDropping = false;
                             await DropDiscInColumn(aiColumn);
                         }
                     }
@@ -201,12 +222,23 @@ namespace Connect4Game
 
             var color = _game.CurrentPlayer == 1 ? Colors.Red : Colors.Yellow;
             TurnToken.BackgroundColor = color;
-            TurnText.Text = $"Player {_game.CurrentPlayer}'s Turn";
 
+            if (isVsAI && _game.CurrentPlayer == 2)
+            {
+                TurnText.Text = "AI's Turn";
+            }
+            else
+            {
+                TurnText.Text = $"Player {_game.CurrentPlayer}'s Turn";
+            }
+                
             for (int col = 0; col < indicatorTokens.Length; col++)
             {
                 indicatorTokens[col].BackgroundColor = color;
+                indicatorTokens[col].Opacity = (isVsAI && _game.CurrentPlayer == 2) ? 0.5 : 1.0;
             }
+
+          //  SetArrowInputEnabled(!(isVsAI && _game.CurrentPlayer == 2));
         }
 
         private void ApplyHoverEffect(BoxView box)
