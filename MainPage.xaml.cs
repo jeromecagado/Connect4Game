@@ -22,7 +22,7 @@ namespace Connect4Game
         // Checks for AI flag.
         private bool isVsAI = false;
 
-        public MainPage(GameSettings gameSettings, SoundManager soundManager, GameLogic gameLogic, AiPlayer aiPlayer)
+        public MainPage(GameSettings gameSettings, SoundManager soundManager, GameLogic gameLogic, AiPlayer? aiPlayer)
         {
             InitializeComponent();
             _gameSettings = gameSettings;

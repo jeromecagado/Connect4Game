@@ -12,7 +12,7 @@
                 BackgroundColor="LightBlue" />
 
             <Button Text="Player vs AI"
-                Clicked="OnPlayervsAiClicked"
+                Clicked="OnPlayerVsAiClicked"
                 BackgroundColor="LightGreen" />
         </StackLayout>
 

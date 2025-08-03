@@ -16,33 +16,31 @@ namespace Connect4Game
         {
             var builder = MauiApp.CreateBuilder();
 
-            // register dependencies
+            // Core Services
             builder.Services.AddSingleton(AudioManager.Current);
             builder.Services.AddSingleton<SoundManager>();
-            builder.Services.AddTransient<SplashPage>();
-            builder.Services.AddTransient<MainPage>();
+
+            // Game Settings & Logic
+            builder.Services.AddSingleton<GameSettings>();
+            builder.Services.AddTransient<GameLogic>();
+
+            // App Shell & Root App
             builder.Services.AddSingleton<App>();
             builder.Services.AddSingleton<AppShell>();
-            builder.Services.AddTransient<GameLogic>();
+
+            // UI Pages
+            builder.Services.AddTransient<SplashPage>();
+            builder.Services.AddTransient<MainPage>();
             builder.Services.AddTransient<GameMode>();
-            builder.Services.AddSingleton<GameSettings>();
+
+
+            // AI Strategies & Factory
             builder.Services.AddSingleton<EasyStrategy>();
             builder.Services.AddSingleton<MediumStrategy>();
             builder.Services.AddSingleton<HardStrategy>();
+            builder.Services.AddSingleton<AiPlayerFactory>();
 
-            builder.Services.AddTransient<AiPlayer>(sp =>
-            {
-                var settings = sp.GetRequiredService<GameSettings>();
-                IStrategy strategy = settings.Difficulty switch
-                {
-                    AiDifficulty.Easy => sp.GetRequiredService<EasyStrategy>(),
-                    AiDifficulty.Medium => sp.GetRequiredService<MediumStrategy>(),
-                    AiDifficulty.Hard => sp.GetRequiredService<HardStrategy>(),
-                    _ => sp.GetRequiredService<EasyStrategy>()
-                };
-                return new AiPlayer(strategy);
-            });
-            
+            // Sets the root app
             builder
                 .UseMauiApp(serviceProvider => serviceProvider.GetService<App>())
                 .ConfigureFonts(fonts =>
