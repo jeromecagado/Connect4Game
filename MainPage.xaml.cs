@@ -31,8 +31,7 @@ namespace Connect4Game
             _aiPlayer = aiPlayer;
 
             isVsAI = _gameSettings.IsVsAI;
-            Console.WriteLine($"Game Mode: {(isVsAI ? "Player vs AI" : "Player vs Player")}");
-
+            System.Diagnostics.Debug.WriteLine($"Game Mode: {(isVsAI ? "Player vs AI" : "Player vs Player")}");
 
 
             indicatorTokens[0] = Indicator0;
@@ -47,16 +46,6 @@ namespace Connect4Game
             for (int i = 0; i < indicatorTokens.Length; i++)
             {
                 var indicator = indicatorTokens[i];
-
-                var tap = new TapGestureRecognizer
-                {
-                    CommandParameter = i.ToString()
-                };
-                tap.Tapped += OnArrowsTapped;
-                Console.WriteLine($"Tapped! isVsAI: {isVsAI}, CurrentPlayer: {_game.CurrentPlayer}");
-
-                indicator.GestureRecognizers.Add(tap);
-                _tapRecognizers[i] = tap;
 
                 var pointerEnter = new PointerGestureRecognizer();
                 pointerEnter.PointerEntered += (s, e) => ApplyHoverEffect(indicator);
@@ -118,24 +107,6 @@ namespace Connect4Game
             UpdateIndicatorColors();
         }
 
-        private void SetArrowInputEnabled(bool isEnabled)
-        {
-            for (int i = 0; i <indicatorTokens.Length; i++)
-            {
-                var indicator = indicatorTokens[i];
-                var tap = _tapRecognizers[i];
-
-                if (isEnabled && !indicator.GestureRecognizers.Contains(tap))
-                {
-                    indicator.GestureRecognizers.Add(tap);
-                }
-                else if (!isEnabled && indicator.GestureRecognizers.Contains(tap))
-                {
-                    indicator.GestureRecognizers.Remove(tap);
-                }
-            }
-        }
-
         private async void PlayDropSound()
         {
             await _soundManager.PlayDropSound();
@@ -189,11 +160,11 @@ namespace Connect4Game
                     // Check for win
                     if (_game.CheckForWin(row, column))
                     {
-                        if (isVsAI)
+                        if (isVsAI && _game.CurrentPlayer == 2)
                         {
                             await DisplayAlert("Connect Four!", "AI wins!", "Play Again");
                             _game.ResetGame();
-                            RemoveAllTapGestures();
+                    //        RemoveAllTapGestures();
                             PlayResetSound();
                             ClearBoardVisuals();
                             UpdateIndicatorColors();
@@ -202,7 +173,7 @@ namespace Connect4Game
                         }
                         await DisplayAlert("Connect Four!", $"Player {_game.CurrentPlayer} wins!", "Play Again");
                         _game.ResetGame();
-                        RemoveAllTapGestures();
+                    //    RemoveAllTapGestures();
                         PlayResetSound();
                         ClearBoardVisuals();
                         UpdateIndicatorColors();
@@ -213,7 +184,7 @@ namespace Connect4Game
                     {
                         await DisplayAlert("Draw!", "No more moves - it's a tie!", "Play Again");
                         _game.ResetGame();
-                        RemoveAllTapGestures();
+                  //      RemoveAllTapGestures();
                         PlayResetSound();
                         ClearBoardVisuals();
                         UpdateIndicatorColors();
@@ -226,7 +197,6 @@ namespace Connect4Game
                         _game.SwitchPlayer();
                         UpdateIndicatorColors();
 
-                        Console.WriteLine($"AI Mode: {isVsAI}, CurrentPlayer: {_game.CurrentPlayer}");
                         // If AI, AI will make a move. 
                         if (isVsAI && _game.CurrentPlayer == 2)
                         {
@@ -252,28 +222,23 @@ namespace Connect4Game
 
             var color = _game.CurrentPlayer == 1 ? Colors.Red : Colors.Yellow;
             TurnToken.BackgroundColor = color;
-            TurnText.Text = $"Player {_game.CurrentPlayer}'s Turn";
 
+            if (isVsAI && _game.CurrentPlayer == 2)
+            {
+                TurnText.Text = "AI's Turn";
+            }
+            else
+            {
+                TurnText.Text = $"Player {_game.CurrentPlayer}'s Turn";
+            }
+                
             for (int col = 0; col < indicatorTokens.Length; col++)
             {
                 indicatorTokens[col].BackgroundColor = color;
                 indicatorTokens[col].Opacity = (isVsAI && _game.CurrentPlayer == 2) ? 0.5 : 1.0;
             }
 
-            SetArrowInputEnabled(!(isVsAI && _game.CurrentPlayer == 2));
-        }
-
-        private void RemoveAllTapGestures()
-        {
-            for (int i = 0; i < indicatorTokens.Length; i++)
-            {
-                var indicator = indicatorTokens[i];
-                var tap = _tapRecognizers[i];
-                if (indicator.GestureRecognizers.Contains(tap))
-                {
-                    indicator.GestureRecognizers.Remove(tap);
-                }
-            }
+          //  SetArrowInputEnabled(!(isVsAI && _game.CurrentPlayer == 2));
         }
 
         private void ApplyHoverEffect(BoxView box)
