@@ -22,7 +22,7 @@
 
             <Button Text="Easy" Clicked="OnEasyAiClicked" BackgroundColor="GreenYellow" />
             <Button Text="Medium" Clicked="OnMediumAiClicked" BackgroundColor="DarkOrange" />
-            <Button Text="Hard" Clicked="OnHardAiClicked" BackgroundColor="Red" />
+            <!--<Button Text="Hard" Clicked="OnHardAiClicked" BackgroundColor="Red" /> -->
         </StackLayout>
     </VerticalStackLayout>
 </ContentPage>

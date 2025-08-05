@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Connect4Game.Logic;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -8,24 +9,55 @@ namespace Connect4Game.AI
     public class MediumStrategy : IStrategy
     {
         private readonly Random _random = new();
+        private readonly AnalyzeBoard _analyzer;
+
+        public MediumStrategy(AnalyzeBoard analyzer)
+        {
+            _analyzer = analyzer;
+        }
 
         public int GetMove(int[,] boardState)
         {
-            var validColumns = new List<int>();
+            var validMoves = _analyzer.GetValidMoves(boardState);
+            var aiPlayer = PlayerType.AI;
+            var humanPlayer = PlayerType.Human;
 
-            for (int col = 0; col < boardState.GetLength(1); col++)
+            // AI will try to win.
+            foreach (var col in validMoves)
             {
-                if (boardState[0, col] == 0)
+                if (_analyzer.IsWinningMove(boardState, col, aiPlayer))
                 {
-                    validColumns.Add(col);
+                    return col;
                 }
             }
 
-            if (validColumns.Count == 0)
+            // Block player from winning
+            foreach (var col in validMoves)
             {
-                throw new InvalidOperationException("No valid moves available");
+                if (_analyzer.IsWinningMove(boardState, col, humanPlayer))
+                {
+                    return col;
+                }
             }
-            return validColumns[_random.Next(validColumns.Count)];
+
+            // Focus on center columns
+            int center = boardState.GetLength(1) / 2;
+            if (validMoves.Contains(center))
+            {
+                return center;
+            }
+
+            // Prefer columns near center
+            var sortedByCenterProximity = validMoves
+                .OrderBy(col => Math.Abs(col - center))
+                .ToList();
+
+            if (sortedByCenterProximity.Count > 0)
+                return sortedByCenterProximity[0];
+
+            // If nothing else use random drops
+
+            return validMoves[_random.Next(validMoves.Count)];
         }
-    }
+    }    
 }

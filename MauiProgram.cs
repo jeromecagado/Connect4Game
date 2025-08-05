@@ -23,6 +23,7 @@ namespace Connect4Game
             // Game Settings & Logic
             builder.Services.AddSingleton<GameSettings>();
             builder.Services.AddTransient<GameLogic>();
+            builder.Services.AddTransient<AnalyzeBoard>();
 
             // App Shell & Root App
             builder.Services.AddSingleton<App>();
