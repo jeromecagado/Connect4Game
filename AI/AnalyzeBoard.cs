@@ -53,8 +53,8 @@ namespace Connect4Game.AI
         {
             return CheckDirection(board, row, col, player, 0, 1) ||  // Horizontal
                    CheckDirection(board, row, col, player, 1, 0) ||  // Vertical
-                   CheckDirection(board, row, col, player, 1, 1) ||  // Diagonal /
-                   CheckDirection(board, row, col, player, -1, 1);   // Diagonal \
+                   CheckDirection(board, row, col, player, 1, 1) ||  // Diagonal Up Right
+                   CheckDirection(board, row, col, player, -1, 1);   // Diagonal Up Left
         }
 
         private bool CheckDirection(int[,] board, int row, int col, int player, int dRow, int dCol)
