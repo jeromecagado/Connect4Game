@@ -22,10 +22,7 @@ A modern desktop version of the classic **Connect 4** game, built with **.NET MA
 ## 🧠 Planned Milestones (AI Roadmap)
 
 Future versions will include a CPU opponent with smart gameplay logic.
-
-- [ ] **Minimax Algorithm** – Basic AI decision-making with depth-based evaluation  
-- [ ] **Alpha-Beta Pruning** – Performance boost for deeper AI search  
-- [ ] **Heuristic Board Scoring** – Smarter AI strategy beyond random moves  
+- [X] **Heuristic Board Scoring** – Smarter AI strategy beyond random moves  
 - [X] **AI Difficulty Levels** – Easy, Medium, Hard (tuned by depth and scoring)  
 - [X] **Game Mode Selector** – Toggle Human vs Human or Human vs AI  
 - [ ] **Optional Voice Feedback** – Add fun voice lines when AI wins/loses  
