@@ -29,6 +29,13 @@ Future versions will include a CPU opponent with smart gameplay logic.
 
 ---
 
+## 🎥 Demo Video
+
+Check out the gameplay demonstration of Connect Four:
+
+[![Watch the video](https://img.youtube.com/vi/5UnRR_79L4Y/0.jpg)](https://youtu.be/5UnRR_79L4Y)
+
+
 ## 🚀 Getting Started
 
 ### 🧰 Requirements
